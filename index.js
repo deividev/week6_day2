@@ -19,15 +19,11 @@ function createResource(e) {
     // TODO llamar a la función getFormData, esta devolvera un objeto con los valores del formulario que hay que pasar a la llamada Ajax
     // TODO Una vez obtenidos los datos del formulario, llamar a la función createData. .done debe llamar a destroyElements y .fail a handleError.
     const data = getFormData(flagCreate);
-    createData(data).done(destroyElements).fail(handleError);
 }
 
 function createData(data) {
     // Todo Realizar la llamada Ajax con Jquery para crear un recurso nuevo.
-    return $.ajax(ENDPOINT_URL+flagCreate, {
-        method: 'POST',
-        data: data,
-    })
+
 }
 function searchData (endpoint) {
     //Todo Realizar la llamada Ajax con Jquery para traer los recursos.
