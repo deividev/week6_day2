@@ -12,6 +12,23 @@ function searchResource (e) {
     destroyElements();
     $('#fact').addClass('fact');
     // TODO Llamar a la función searchData y manejar las respuestas con los callbacks de los métodos .done y .fail de Jquery
+    searchData(endpoint);
+
+    $.ajax( ENDPOINT_URL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(endpoint)
+    })
+    .done(function(response) {
+        handleData(response);
+        console.log(response);
+    }).fail(function(error) {
+        handleError(error);
+        console.log(error);
+    });
     // Todo .done() Debe llamar a handleData y .fail a handleError.
 }
 // Función que maneja la creación de nuevos recursos
@@ -26,6 +43,8 @@ function createData(data) {
 
 }
 function searchData (endpoint) {
+    console.log(ENDPOINT_URL);
+    
     //Todo Realizar la llamada Ajax con Jquery para traer los recursos.
 }
 // Almacena los valores del formulario en un objeto y lo retorna.
