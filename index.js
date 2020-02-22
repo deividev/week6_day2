@@ -3,50 +3,42 @@ const ENDPOINT_URL = 'http://5c3732177820ff0014d926b4.mockapi.io/';
 $(function () {
     $("#btn-create-student").click(createForm);
     $("#btn-create-teacher").click(createForm);
-    $("#btn-show-teachers").click(searchResource);
-    $("#btn-show-students").click(searchResource);
+    $("#btn-show-teachers").click(() => {
+        searchResource('teacher')
+    });
+    $("#btn-show-students").click(() => {
+        searchResource('student')
+    });
 });
-
-function searchResource (event) {
-    let endpoint = event.target.innerHTML === 'Mostrar Alumnos' ? 'student' : 'teacher';
+function searchResource(partialEndpoint) {
+    // let endpoint = e.target.innerHTML === 'Mostrar Alumnos' ? 'student' : 'teacher';
     destroyElements();
     $('#fact').addClass('fact');
-    // TODO Llamar a la función searchData y manejar las respuestas con los callbacks de los métodos .done y .fail de Jquery
-    endpoint = ENDPOINT_URL + endpoint;
-    /*searchData(endpoint).done((respuesta) => {
-        console.log(respuesta);
-        handleData(respuesta);
-        debugger    
-    }) .fail((error) =>{
-        handleError(error);
-    })*/
+    let endpoint = ENDPOINT_URL + partialEndpoint;
     searchData(endpoint)
-        .done(handleData)
+        .done((response) => {
+          handleData(response, partialEndpoint)
+        })
         .fail(handleError);
-    
-    // Todo .done() Debe llamar a handleData y .fail a handleError.
 }
 // Función que maneja la creación de nuevos recursos
 function createResource(e) {
-    // TODO llamar a la función getFormData, esta devolvera un objeto con los valores del formulario que hay que pasar a la llamada Ajax
-    // TODO Una vez obtenidos los datos del formulario, 
-    //llamar a la función createData. .done debe llamar a destroyElements y
-    // .fail a handleError.
-    const data = getFormData(flagCreate);
-    debugger    
-    createData(data)
-        .done(destroyElements)
-        .fail(handleError);
-    debugger
+  // TODO llamar a la función getFormData, esta devolvera un objeto con los valores del formulario que hay que pasar a la llamada Ajax
+  // TODO Una vez obtenidos los datos del formulario, 
+  //llamar a la función createData. .done debe llamar a destroyElements y
+  // .fail a handleError.
+  const data = getFormData(flagCreate);
+   
+  return $.ajax(data);
 }
 
-function createData(data, endpoint) {
-    // Todo Realizar la llamada Ajax con Jquery para crear un recurso nuevo.
-    $.get(endpoint, { userId : 35 }, function(resp) {
-        console.log(resp);
-    });
-    return $.ajax(data);
+function createData(data, partialEndpoint) {
+  debugger
+  const endpoint = ENDPOINT_URL + partialEndpoint;
+  // Todo Realizar la llamada Ajax con Jquery para crear un recurso nuevo.
+  return $.post(data, endpoint);
 }
+
 function searchData (endpoint) {
    return $.ajax(endpoint);
         
@@ -64,12 +56,13 @@ function getFormData(endpoint) {
 }
 
 // Función que recibe un array de datos y crea un elemento en el DOM por cada uno de ellos.
-function handleData (data) {
-    if (data && data.length > 0) {
-        data.forEach((element) => {
-            createElement(element);
-        })
-    }
+function handleData (data, endpoint) {
+  if (data && data.length > 0) {
+      data.forEach((element) => {
+          createElement(element);
+      })
+  }
+  window.localStorage.setItem(endpoint, JSON.stringify(data))
 }
 
 function handleError (err) {
